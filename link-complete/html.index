@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>AI Chef – Complete Instagram Link</title>
+    <meta name="viewport" content="width=device-width, initial-
+  scale=1">
+    <style>
+      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe
+  UI", sans-serif; margin: 0; padding: 32px; background: #faf7f1;
+  color: #2d1f16; }
+      main { max-width: 520px; margin: 0 auto; background: #fff;
+  border-radius: 16px; padding: 32px; box-shadow: 0 20px 40px rgba(0,
+  0, 0, 0.08); }
+      h1 { margin-top: 0; font-size: 28px; }
+      code { font-size: 1.1em; background: rgba(244, 159, 10, 0.12);
+  padding: 3px 6px; border-radius: 6px; }
+      button { margin-top: 24px; font-size: 16px; padding: 12px 16px;
+  border-radius: 12px; border: 0; background: #f49f0a; color: #fff;
+  font-weight: 600; cursor: pointer; }
+      button.secondary { background: transparent; color: #f49f0a;
+  border: 1.5px solid rgba(244, 159, 10, 0.4); margin-left: 12px; }
+      p { line-height: 1.5; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Almost there!</h1>
+      <p>If the AI Chef app didn’t open automatically, copy this code
+  and paste it in your AI Chef app to finish linking Instagram:</p>
+      <p><code id="code">loading…</code></p>
+      <p id="store-link" hidden>
+        Don’t have the app installed? <a id="app-store" href="#"
+  target="_blank" rel="noopener">Download AI Chef for iOS.</a>
+      </p>
+      <p id="error" hidden>Hmm, we couldn’t find a verification code
+  in your link. Make sure you tapped the latest DM from AI Chef.</p>
+      <div id="actions" hidden>
+        <button id="copy">Copy code</button>
+        <button id="open">Open AI Chef</button>
+      </div>
+    </main>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get('code');
+      const codeEl = document.getElementById('code');
+      const errorEl = document.getElementById('error');
+      const actions = document.getElementById('actions');
+
+      if (!code) {
+        codeEl.textContent = 'No code found';
+        errorEl.hidden = false;
+      } else {
+        const normalized = code.trim().toUpperCase();
+        codeEl.textContent = normalized;
+        actions.hidden = false;
+
+        document.getElementById('copy').addEventListener('click',
+  async () => {
+          try {
+            await navigator.clipboard.writeText(normalized);
+            alert('Copied! Switch back to the AI Chef app.');
+          } catch {
+            alert('Copy failed—select and copy the code manually.');
+          }
+        });
+
+        document.getElementById('open').addEventListener('click', ()
+  => {
+          window.location.href = 'aichef://link-complete?code=' +
+  encodeURIComponent(normalized);
+        });
+      }
+
+  </html>
