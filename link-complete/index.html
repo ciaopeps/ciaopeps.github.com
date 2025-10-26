@@ -105,8 +105,7 @@
       const params = new URLSearchParams(window.location.search);
       const rawCode = params.get('code');
 
-      const APP_STORE_URL = 'https://apps.apple.com/app/
-  idXXXXXXXXX'; // TODO: replace with your actual App Store link
+
       const CUSTOM_SCHEME = 'aichef://link-complete?code=';
 
       const codeElement = document.getElementById('code');
@@ -126,13 +125,6 @@
         storeLink.hidden = false;
       }
 
-      if (!rawCode) {
-        codeElement.textContent = 'No code found';
-        error.hidden = false;
-        enableStoreLink(APP_STORE_URL);
-        copyHint.hidden = false;
-        return;
-      }
 
       const normalizedCode = rawCode.trim().toUpperCase();
       const encodedCode = encodeURIComponent(normalizedCode);
@@ -144,7 +136,6 @@
       textArea.hidden = false;
       copyHint.hidden = false;
       actions.hidden = false;
-      enableStoreLink(APP_STORE_URL);
       openSafariLink.href = universalLink;
 
       copyButton.addEventListener('click', async () => {
@@ -161,11 +152,6 @@
         const appUrl = `${CUSTOM_SCHEME}${encodedCode}`;
         window.location.href = appUrl;
 
-        if (APP_STORE_URL.includes('id')) {
-          setTimeout(() => {
-            window.location.href = APP_STORE_URL;
-          }, 2000);
-        }
       });
     </script>
   </body>
