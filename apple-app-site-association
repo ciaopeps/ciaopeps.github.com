@@ -1,0 +1,12 @@
+{
+    "applinks": {
+      "details": [
+        {
+          "appIDs": ["R3AJ3ZST9T.com.example.FoodUIIOS"],
+          "components": [
+            { "/": "/link-complete/*" }
+          ]
+        }
+      ]
+    }
+  }
