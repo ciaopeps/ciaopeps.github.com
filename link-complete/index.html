@@ -58,15 +58,21 @@
       width: 120px;
       height: 120px;
     }
+    .loading {
+      color: #666;
+      font-size: 14px;
+      margin-top: 16px;
+    }
   </style>
 </head>
 <body>
   <main>
     <h1>Almost there!</h1>
     <button id="open-app">
-      <img src="https://raw.githubusercontent.com/ciaopeps/ciaopeps.github.com/main/link-complete/flvr_F_v4_no_bg.png" alt="">
+      <img src="https://raw.githubusercontent.com/ciaopeps/ciaopeps.github.com/main/link-complete/flvr_F_v4_no_bg.png" alt="AI Chef Logo">
       Open
     </button>
+    <p class="loading">Redirecting...</p>
   </main>
 
   <script>
@@ -75,20 +81,27 @@
     const CUSTOM_SCHEME_WITH_CODE = 'aichef://link-complete?code=';
     const CUSTOM_SCHEME_HOME = 'aichef://';
 
-    const openAppButton = document.getElementById('open-app');
-
-    openAppButton.addEventListener('click', () => {
+    function openApp() {
+      let appUrl;
       if (rawCode && rawCode.trim()) {
         // User came from account linking with a code
         const normalizedCode = rawCode.trim().toUpperCase();
         const encodedCode = encodeURIComponent(normalizedCode);
-        const appUrl = `${CUSTOM_SCHEME_WITH_CODE}${encodedCode}`;
-        window.location.href = appUrl;
+        appUrl = `${CUSTOM_SCHEME_WITH_CODE}${encodedCode}`;
       } else {
         // User came from error "Back to App" button or direct link - just open app home
-        window.location.href = CUSTOM_SCHEME_HOME;
+        appUrl = CUSTOM_SCHEME_HOME;
       }
-    });
+      
+      console.log('Opening app:', appUrl);
+      window.location.href = appUrl;
+    }
+
+    const openAppButton = document.getElementById('open-app');
+    openAppButton.addEventListener('click', openApp);
+
+    // Auto-redirect after 1 second
+    setTimeout(openApp, 1000);
   </script>
 </body>
 </html>
