@@ -6,55 +6,129 @@
     <meta name="viewport" content="width=device-width, initial-
   scale=1">
     <style>
-      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe
-  UI", sans-serif; margin: 0; padding: 32px; background: #faf7f1;
-  color: #2d1f16; }
-      main { max-width: 520px; margin: 0 auto; background: #fff;
-  border-radius: 16px; padding: 32px; box-shadow: 0 20px 40px rgba(0,
-  0, 0, 0.08); }
-      h1 { margin-top: 0; font-size: 28px; }
-      code { font-size: 1.1em; background: rgba(244, 159, 10, 0.12);
-  padding: 3px 6px; border-radius: 6px; }
-      button { margin-top: 24px; font-size: 16px; padding: 12px 16px;
-  border-radius: 12px; border: 0; background: #f49f0a; color: #fff;
-  font-weight: 600; cursor: pointer; }
-      button.secondary { background: transparent; color: #f49f0a;
-  border: 1.5px solid rgba(244, 159, 10, 0.4); margin-left: 12px; }
-      p { line-height: 1.5; }
+      :root {
+        color-scheme: light;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+  sans-serif;
+        margin: 0;
+        padding: 32px;
+        background: #faf7f1;
+        color: #2d1f16;
+      }
+      main {
+        max-width: 520px;
+        margin: 0 auto;
+        background: #fff;
+        border-radius: 16px;
+        padding: 32px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+      }
+      h1 {
+        margin-top: 0;
+        font-size: 28px;
+      }
+      p {
+        line-height: 1.5;
+      }
+      code {
+        font-size: 1.1em;
+        background: rgba(244, 159, 10, 0.12);
+        padding: 3px 6px;
+        border-radius: 6px;
+      }
+      .buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 24px;
+      }
+      button {
+        font-size: 16px;
+        padding: 12px 16px;
+        border-radius: 12px;
+        border: 0;
+        background: #f49f0a;
+        color: #fff;
+        font-weight: 600;
+        cursor: pointer;
+        flex: 1 1 160px;
+      }
+      button.secondary {
+        background: transparent;
+        color: #f49f0a;
+        border: 1.5px solid rgba(244, 159, 10, 0.4);
+      }
+      button.outline {
+        background: transparent;
+        color: #2d1f16;
+        border: 1.5px solid rgba(0, 0, 0, 0.18);
+      }
     </style>
   </head>
   <body>
     <main>
       <h1>Almost there!</h1>
-      <p>If the AI Chef app didn’t open automatically, copy this code
-  and paste it in your AI Chef app to finish linking Instagram:</p>
+      <p>If the AI Chef app didn’t open automatically, copy the code
+  below and paste it into the app to finish linking Instagram.</p>
+
       <p><code id="code">loading…</code></p>
+
+      <p id="error" hidden>
+        Hmm, we couldn’t find a verification code in your link. Make
+  sure you tapped the latest DM from AI Chef.
+      </p>
+
       <p id="store-link" hidden>
         Don’t have the app installed? <a id="app-store" href="#"
   target="_blank" rel="noopener">Download AI Chef for iOS.</a>
       </p>
-      <p id="error" hidden>Hmm, we couldn’t find a verification code
-  in your link. Make sure you tapped the latest DM from AI Chef.</p>
-      <div id="actions" hidden>
+
+      <div id="actions" class="buttons" hidden>
         <button id="copy">Copy code</button>
-        <button id="open">Open AI Chef</button>
+        <button id="open-app">Open AI Chef</button>
+        <button id="open-safari" class="secondary">Open in Safari</
+  button>
       </div>
     </main>
 
     <script>
       const params = new URLSearchParams(window.location.search);
-      const code = params.get('code');
-      const codeEl = document.getElementById('code');
-      const errorEl = document.getElementById('error');
-      const actions = document.getElementById('actions');
+      const rawCode = params.get('code');
+      const codeElement = document.getElementById('code');
+      const actionsElement = document.getElementById('actions');
+      const errorElement = document.getElementById('error');
 
-      if (!code) {
-        codeEl.textContent = 'No code found';
-        errorEl.hidden = false;
+      const APP_STORE_URL = 'https://apps.apple.com/app/
+  idXXXXXXXXX'; // TODO: replace with real App Store link
+      const CUSTOM_SCHEME = 'aichef://link-complete?code=';
+
+      function setStoreLink(url) {
+        if (!url || !url.startsWith('https://')) return;
+        const storeLink = document.getElementById('store-link');
+        const anchor = document.getElementById('app-store');
+        anchor.href = url;
+        storeLink.hidden = false;
+      }
+
+      function openInSafari(universalLink) {
+        window.open(universalLink, '_blank', 'noopener');
+      }
+
+      if (!rawCode) {
+        codeElement.textContent = 'No code found';
+        errorElement.hidden = false;
+        setStoreLink(APP_STORE_URL);
       } else {
-        const normalized = code.trim().toUpperCase();
-        codeEl.textContent = normalized;
-        actions.hidden = false;
+        const normalized = rawCode.trim().toUpperCase();
+        const encoded = encodeURIComponent(normalized);
+        const universalLink = `${window.location.origin}/link-
+  complete?code=${encoded}`;
+
+        codeElement.textContent = normalized;
+        actionsElement.hidden = false;
+        setStoreLink(APP_STORE_URL);
 
         document.getElementById('copy').addEventListener('click',
   async () => {
@@ -66,11 +140,23 @@
           }
         });
 
-        document.getElementById('open').addEventListener('click', ()
-  => {
-          window.location.href = 'aichef://link-complete?code=' +
-  encodeURIComponent(normalized);
+        document.getElementById('open-app').addEventListener('click',
+  () => {
+          const appUrl = `${CUSTOM_SCHEME}${encoded}`;
+          window.location.href = appUrl;
+
+          setTimeout(() => {
+            if (APP_STORE_URL.includes('id')) {
+              window.location.href = APP_STORE_URL;
+            }
+          }, 2000);
+        });
+
+        document.getElementById('open-
+  safari').addEventListener('click', () => {
+          openInSafari(universalLink);
         });
       }
-
+    </script>
+  </body>
   </html>
