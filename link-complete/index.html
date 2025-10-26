@@ -25,6 +25,9 @@
       padding: 32px;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     h1 { 
       margin-top: 0; 
@@ -32,29 +35,38 @@
       margin-bottom: 24px;
     }
     button {
-      width: 100%;
-      font-size: 18px;
-      padding: 16px;
-      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: none;
       border: 0;
-      background: #f49f0a;
-      color: #fff;
+      color: #4a9d3f;
+      font-size: 18px;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s;
+      padding: 0;
     }
     button:hover {
-      background: #e09209;
+      opacity: 0.8;
     }
     button:active {
-      transform: scale(0.98);
+      transform: scale(0.95);
+    }
+    button img {
+      width: 120px;
+      height: 120px;
     }
   </style>
 </head>
 <body>
   <main>
     <h1>Almost there!</h1>
-    <button id="open-app">Open AI Chef</button>
+    <button id="open-app">
+      <img src="https://raw.githubusercontent.com/ciaopeps/ciaopeps.github.com/main/link-complete/flvr_F_v4_no_bg.png" alt="">
+      Open
+    </button>
   </main>
 
   <script>
