@@ -79,7 +79,8 @@
     const params = new URLSearchParams(window.location.search);
     const rawCode = params.get('code');
     const CUSTOM_SCHEME_WITH_CODE = 'aichef://link-complete?code=';
-    const CUSTOM_SCHEME_HOME = 'aichef://';
+    // Try without query params first - your app should handle this as "go to home"
+    const CUSTOM_SCHEME_HOME = 'aichef://link-complete';
 
     function openApp() {
       let appUrl;
@@ -89,7 +90,7 @@
         const encodedCode = encodeURIComponent(normalizedCode);
         appUrl = `${CUSTOM_SCHEME_WITH_CODE}${encodedCode}`;
       } else {
-        // User came from error "Back to App" button or direct link - just open app home
+        // User came from error "Back to App" button - open to home
         appUrl = CUSTOM_SCHEME_HOME;
       }
       
