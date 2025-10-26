@@ -72,16 +72,21 @@
   <script>
     const params = new URLSearchParams(window.location.search);
     const rawCode = params.get('code');
-    const CUSTOM_SCHEME = 'aichef://link-complete?code=';
+    const CUSTOM_SCHEME_WITH_CODE = 'aichef://link-complete?code=';
+    const CUSTOM_SCHEME_HOME = 'aichef://';
 
     const openAppButton = document.getElementById('open-app');
 
     openAppButton.addEventListener('click', () => {
-      if (rawCode) {
+      if (rawCode && rawCode.trim()) {
+        // User came from account linking with a code
         const normalizedCode = rawCode.trim().toUpperCase();
         const encodedCode = encodeURIComponent(normalizedCode);
-        const appUrl = `${CUSTOM_SCHEME}${encodedCode}`;
+        const appUrl = `${CUSTOM_SCHEME_WITH_CODE}${encodedCode}`;
         window.location.href = appUrl;
+      } else {
+        // User came from error "Back to App" button or direct link - just open app home
+        window.location.href = CUSTOM_SCHEME_HOME;
       }
     });
   </script>
