@@ -78,23 +78,37 @@
   <script>
     const params = new URLSearchParams(window.location.search);
     const rawCode = params.get('code');
-    const CUSTOM_SCHEME_WITH_CODE = 'aichef://link-complete?code=';
-    // Try without query params first - your app should handle this as "go to home"
-    const CUSTOM_SCHEME_HOME = 'aichef://link-complete';
+    const recipeIdFromQuery = params.get('recipeId');
+    
+    // Extract recipe ID from path: /link-complete/abc-123 or /link-complete/abc-123/
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
+    const linkCompleteIndex = pathParts.indexOf('link-complete');
+    const recipeIdFromPath = linkCompleteIndex !== -1 && pathParts[linkCompleteIndex + 1] 
+      ? decodeURIComponent(pathParts[linkCompleteIndex + 1]) 
+      : null;
+    
+    const recipeId = recipeIdFromPath || recipeIdFromQuery;
 
     function openApp() {
       let appUrl;
-      if (rawCode && rawCode.trim()) {
-        // User came from account linking with a code
+      
+      if (recipeId && recipeId.trim()) {
+        // Recipe ID provided - open specific recipe
+        const encodedRecipeId = encodeURIComponent(recipeId.trim());
+        appUrl = `aichef://recipe/${encodedRecipeId}`;
+        console.log('Opening recipe:', appUrl);
+      } else if (rawCode && rawCode.trim()) {
+        // Account linking code provided
         const normalizedCode = rawCode.trim().toUpperCase();
         const encodedCode = encodeURIComponent(normalizedCode);
-        appUrl = `${CUSTOM_SCHEME_WITH_CODE}${encodedCode}`;
+        appUrl = `aichef://link-complete?code=${encodedCode}`;
+        console.log('Opening with code:', appUrl);
       } else {
-        // User came from error "Back to App" button - open to home
-        appUrl = CUSTOM_SCHEME_HOME;
+        // No params - open to home
+        appUrl = 'aichef://link-complete';
+        console.log('Opening home:', appUrl);
       }
       
-      console.log('Opening app:', appUrl);
       window.location.href = appUrl;
     }
 
@@ -106,3 +120,4 @@
   </script>
 </body>
 </html>
+
